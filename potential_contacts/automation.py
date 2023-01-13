@@ -1,50 +1,50 @@
 import re
 
-# this file has been pre-generated with a bunch of text
-# with 10 valid social security numbers spread throughout
-with open("../assets/potential_contacts.txt", "r") as f:
+
+with open("/home/dylan/CodeFellows/projects/courses/401/labs/potential-contacts/assets/potential_contacts.txt", "r") as f:
     text_from_file = f.read()
 
-phone_pattern = r"\b(?:\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}(?:x\d+)?\b"
-email_pattern = r""
 
-phone_nums = re.findall(phone_pattern, text_from_file)
-emails = re.findall(email_pattern, text_from_file)
+# regex patterns
 
-print(f"{phone_nums}")
+phone_pattern = r"(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})"
+email_pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+
+# Format the phone numbers
+
+phone_numbers = re.findall(phone_pattern, text_from_file)
+# remove duplicates phone numbers
+non_duplicate_phone_numbers = list(dict.fromkeys(phone_numbers))
+
+sorted_phone_numbers = sorted(non_duplicate_phone_numbers)
+# remove non-numerical characters
+joined_phone_numbers = [re.sub('[^0-9]', '', num) for num in sorted_phone_numbers]
+# insert hyphens to separate the phone numbers into format: xxx-xxx-xxxx
+
+formatted_phone_numbers = []
+
+for num in joined_phone_numbers:
+    formatted_phone_numbers.append(num[:3] + "-" + num[3:6] + "-" + num[6:])
+# insert new line between each phone number
+phone_nums_to_print = '\n'.join(formatted_phone_numbers)
+
+# format emails
+
+email_addresses = re.findall(email_pattern, text_from_file)
+# remove duplicates
+non_duplicate_email_addresses = list(dict.fromkeys(email_addresses))
+# sort in ascending order
+sorted_email_addresses = sorted(non_duplicate_email_addresses)
+# insert new line between each email address  
+email_addys_to_print = '\n'.join(sorted_email_addresses)
 
 
-# 665-06-4021
-# that's a valid social security number
-# but how can we verify that with code?
+# write to new files
 
-# while it is possible to do this the long way
-# Regular Expressions were made for just such a task.
+with open("/home/dylan/CodeFellows/projects/courses/401/labs/potential-contacts/assets/phone_numbers.txt", "w") as new_file: 
+    new_file.write(str(phone_nums_to_print))
 
-# def validate(ssn):
-#     pattern = r"111-22-3333"
-#     pattern = r"\d\d\d-\d\d-\d\d\d\d"
-#     pattern = r"\d{3}-\d{2}-\d{4}"
-
-#     # https://www.geeksforgeeks.org/how-to-validate-ssn-social-security-number-using-regular-expression/
-#     pattern = r"^(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4}$"
-
-#     match_obj = re.match(pattern, ssn)
-
-#     return match_obj.group() if match_obj else None
+with open("/home/dylan/CodeFellows/projects/courses/401/labs/potential-contacts/assets/email_addresses.txt", "w") as new_file:
+    new_file.write(str(email_addys_to_print))
 
 
-# goodies = ['111-22-3333']
-# baddies = ['666-22-3333', '000-22-3333', '900-22-3333', '555-00-3333', '111-222-3333']
-# questionables = ['1111-22-3333', '111-22-33333']  # extra leading or trailing number
-
-# for ssn in goodies:
-#     assert validate(ssn)
-
-# for ssn in baddies:
-#     assert not validate(ssn)
-
-# for ssn in questionables:
-#     assert not validate(ssn)
-
-# print("TESTS PASSED")
