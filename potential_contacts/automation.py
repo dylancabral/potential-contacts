@@ -5,8 +5,8 @@ import re
 with open("../assets/potential_contacts.txt", "r") as f:
     text_from_file = f.read()
 
-phone_pattern = r"(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4}"
-email_pattern =r""
+phone_pattern = r"\b(?:\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}(?:x\d+)?\b"
+email_pattern = r""
 
 phone_nums = re.findall(phone_pattern, text_from_file)
 emails = re.findall(email_pattern, text_from_file)
